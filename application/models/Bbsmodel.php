@@ -16,14 +16,14 @@ class Bbsmodel extends CI_Model {
 		return $bbs_data;
 	}
 	
-	public function get_documents_result($bbs_id, $start_limit, $listing_cnt, $search_type, $search_query)
+	public function get_documents_result($bbs_id, $start_limit, $listing_cnt, $params)
 	{
 		$this->load->database();
 		$search_where = "";
 			
-		if(!empty($search_query))
+		if(!empty($params['search_query']))
 		{
-			switch($search_type)
+			switch($params['search_type'])
 			{
 				case "title_content":
 					$search_type = array('title', 'content');
@@ -70,22 +70,86 @@ class Bbsmodel extends CI_Model {
 			LEFT JOIN member
 			ON documents_bbs.member_num=member.member_num
 			WHERE documents_bbs.bbs_id='".$bbs_id."' " . $search_where . "
-			ORDER BY documents_bbs.document_num DESC LIMIT " . $start_limit . "," . $listing_cnt)->result();
+			ORDER BY documents_bbs.parent_document_num DESC, documents_bbs.sequence ASC LIMIT " . $start_limit . "," . $listing_cnt)->result();
 		
 		return $documents_result;
 	}
 	
-	public function get_document_data($column, $value)
+	public function get_document_data($column, $value, $where_params = array())
 	{
 		$this->load->database();
+		
+		$where = '';
+		if(!empty($where_params))
+		{
+			foreach($where_params as $item)
+			{
+				$where .= " AND documents_bbs." . $item['column'] . $item['condition'] . "'". $item['value'] ."' ";
+			}
+		}
 		
 		$document_data = $this->db->query("
 				SELECT documents_bbs.*,member.member_id,member.has_profile_icon 
 				FROM documents_bbs 
 				LEFT JOIN member 
 				ON documents_bbs.member_num=member.member_num 
-				WHERE documents_bbs.document_num='".$document_num."' AND documents_bbs.bbs_id='".$bbs_id."'
+				WHERE documents_bbs." . $column . "='".$value."' " . $where . "
 				")->row();
+		
+		return $document_data;
+	}
+	
+	public function get_position_document_data($target_document_data)
+	{
+		$this->load->database();
+		
+		//밑에답글이랑 겹칠때 
+		$document_data = $this->db->query("
+				SELECT documents_bbs.* 
+				FROM documents_bbs 
+				WHERE documents_bbs.parent_document_num='" . $target_document_data->parent_document_num . "'
+				AND documents_bbs.depth<=" . ($target_document_data->depth) . "
+				AND documents_bbs.sequence>=" . $target_document_data->sequence . "
+				AND documents_bbs.document_num!='".$target_document_data->document_num."'
+				ORDER BY documents_bbs.sequence ASC 
+				LIMIT 1
+				")->row();
+		
+		if(count($document_data) != 1)
+		{
+			//두번째세번째...넣을때
+			$document_data = $this->db->query("
+					SELECT documents_bbs.* 
+					FROM documents_bbs 
+					WHERE documents_bbs.parent_document_num='" . $target_document_data->parent_document_num . "'
+					AND documents_bbs.target_document_num='".$target_document_data->document_num."'
+					AND documents_bbs.sequence>=" . $target_document_data->sequence . "
+					ORDER BY documents_bbs.sequence DESC 
+					LIMIT 1
+					")->row(); 
+			echo "status1<br>";
+			
+			//처음넣을때
+			if(count($document_data) != 1)
+			{
+				$document_data = $this->db->query("
+						SELECT documents_bbs.*
+						FROM documents_bbs
+						WHERE documents_bbs.parent_document_num='" . $target_document_data->parent_document_num . "'
+						AND documents_bbs.depth=" . $target_document_data->depth . "
+						AND documents_bbs.sequence>=" . $target_document_data->sequence . "
+						ORDER BY documents_bbs.sequence ASC
+						LIMIT 1
+						")->row();
+				echo "status2<br>";
+			}
+			else 
+			{
+				$document_data->sequence = $document_data->sequence + 1;
+			}
+		}
+		
+		echo "position_document_num:".$document_data->document_num."<br>";
 		
 		return $document_data;
 	}

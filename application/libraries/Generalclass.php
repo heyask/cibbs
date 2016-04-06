@@ -6,65 +6,88 @@ class Generalclass {
 		$CI =& get_instance();
 	}
 	
-	public function valid_en($str)
+	public function valid_en($str, $allow_empty = false)
 	{
-		if (!empty($str) && preg_match('/^[A-Za-z]/i', $str)) // '/[^a-z\d]/i' should also work.
+		if($allow_empty === true && $this->valid_empty($str))
+			return true;
+		
+		if (ctype_alpha($str)) // '/[^a-z\d]/i' should also work.
+		{
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public function valid_en_($str, $allow_empty = false)
+	{
+		if($allow_empty !== true && $this->valid_empty($str))
+			return false;
+		
+		if (preg_match('/^[A-Za-z_]/i', $str)) // '/[^a-z\d]/i' should also work.
 			return true;
 		else
 			return false;
 	}
 	
-	public function valid_en_($str)
+	public function valid_en_num($str, $allow_empty = false)
 	{
-		if (!empty($str) && preg_match('/^[A-Za-z_]/i', $str)) // '/[^a-z\d]/i' should also work.
+		if($allow_empty !== true && $this->valid_empty($str))
+			return false;
+		
+		if (!preg_match('/[^a-zA-Z0-9]/i', $str)) // '/[^a-z\d]/i' should also work.
 			return true;
 		else
 			return false;
 	}
 	
-	public function valid_en_num($str)
+	public function valid_en_num_($str, $allow_empty = false)
 	{
-		if (!empty($str) && !preg_match('/[^a-zA-Z0-9]/i', $str)) // '/[^a-z\d]/i' should also work.
+		if($allow_empty !== true && $this->valid_empty($str))
+			return false;
+		
+		if (!preg_match('/[^a-zA-Z0-9_]/i', $str)) // '/[^a-z\d]/i' should also work.
 			return true;
 		else
 			return false;
 	}
 	
-	public function valid_en_num_($str)
+	public function valid_ko_en_special($str, $allow_empty = false)
 	{
-		if (!empty($str) && !preg_match('/[^a-zA-Z0-9_]/i', $str)) // '/[^a-z\d]/i' should also work.
-			return true;
-		else
+		if($allow_empty !== true && $this->valid_empty($str))
 			return false;
-	}
-	
-	public function valid_ko_en_special($str)
-	{
-		if(!empty($str) && !preg_match("/^[a-zA-Z0-9가-힣\!\@\#\$\%\^\&\*\(\)\-\_\+\=\.\,\?\~]+$/i", $str))
+		
+		if(!preg_match("/^[a-zA-Z0-9가-힣\!\@\#\$\%\^\&\*\(\)\-\_\+\=\.\,\?\~]+$/i", $str))
 			return false;
 		else
 			return true;
 	}
 	
-	public function valid_ko_en_num($str)
+	public function valid_ko_en_num($str, $allow_empty = false)
 	{
-		if(!empty($str) && !preg_match("/^[a-zA-Z0-9가-힣]+$/i", $str))
+		if($allow_empty !== true && $this->valid_empty($str))
+			return false;
+		
+		if(!preg_match("/^[a-zA-Z0-9가-힣]+$/i", $str))
 			return false;
 		else
 			return true;
 	}
 	
-	public function valid_strlen_between($min, $max, $str)
+	public function valid_num($str, $allow_empty = false)
 	{
-		if(!empty($str) && mb_strlen($str) >= $min && mb_strlen($str) <= $max)
+		if($allow_empty !== true && $this->valid_empty($str))
+			return false;
+		
+		if(!preg_match('/[^0-9]/', $str)) // '/[^a-z\d]/i' should also work.
 			return true;
 		else
 			return false;
 	}
 	
-	public function valid_num($str)
+	public function valid_strlen_between($str, $min, $max)
 	{
-		if(!empty($str) && !preg_match('/[^0-9]/', $str)) // '/[^a-z\d]/i' should also work.
+		if(mb_strlen($str) >= $min && mb_strlen($str) <= $max)
 			return true;
 		else
 			return false;
@@ -72,10 +95,10 @@ class Generalclass {
 	
 	public function valid_email($str)
 	{
-		if(!empty($str) && !filter_var($str, FILTER_VALIDATE_EMAIL)) 
-			return false;
-		else 
+		if(filter_var($str, FILTER_VALIDATE_EMAIL)) 
 			return true;
+		else 
+			return false;
 	}
 	
 	public function valid_empty($str)
@@ -96,6 +119,36 @@ class Generalclass {
 			return filter_var(strip_tags(trim($str)), FILTER_SANITIZE_STRING);
 	}
 	
+	public function go_to_url($url)
+	{
+		header("Location:" . $url);
+		exit;
+	}
+	
+	public function print_json($msg, $success, $params = array(), $exit = true)
+	{
+		$arr = array('msg' => $msg, 'success' => $success);
+		
+		if(!empty($params))
+			array_push($arr, $params);
+		
+		echo json_encode($arr);
+	
+		if($exit === true)
+		{
+			exit;
+		}
+	}
+	
+	public function get_auth_key()
+	{
+		$auth_key = "";
+		
+		for($i = 1; $i <= 100; $i++)
+			$auth_key .= substr('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQKSTUVWXYZ', rand(0, 61), 1);
+		
+		return $auth_key;
+	}
 	
 	public function is_logged()
 	{
@@ -106,6 +159,22 @@ class Generalclass {
 		else
 			return false;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// send_email(보내는이름, 보내는메일, 받는이름, 받는메일, 제목, 내용)
 	public function send_email($from_name, $from_email, $to_name, $to_email, $subject, $content){
@@ -226,16 +295,6 @@ class Generalclass {
     	}
     	return $result;
     }
-	
-	public function getAuthKey()
-	{
-		$auth_key = "";
-		
-		for($i = 1; $i <= 100; $i++)
-			$auth_key .= substr('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQKSTUVWXYZ', rand(0, 61), 1);
-		
-		return $auth_key;
-	}
 	
 	public function getTmpPwd()
 	{

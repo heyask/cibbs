@@ -6,6 +6,17 @@ $lang['msg_error_abnormal_password'] = "정상적이지 않은 비밀번호입�
 $lang['msg_error_abnormal_nickname'] = "정상적이지 않은 닉네임입니다.";
 
 $lang['msg_error_not_exsist_bbs'] = "존재하지 않는 게시판입니다.";
+$lang['msg_error_not_exsist_document'] = "존재하지 않는 게시물입니다.";
+$lang['msg_error_not_exsist_target_document'] = "답글을 달 게시물이 존재하지 않습니다.";
+
+$lang['msg_error_not_exist_member'] = "존재하지 않는 회원입니다. 회원가입을 해주세요.";
+$lang['msg_error_not_exist_email'] = "이미 존재하는 이메일입니다.";
+$lang['msg_error_email_password_diff'] = "이메일 또는 비밀번호가 다릅니다.";
+
+$lang['msg_error_unknown'] = "알 수 없는 오류가 발생하였습니다. 다시 시도해 주세요.";
+
+
+$lang['msg_success_login'] = "로그인에 성공하였습니다.";
 
 $lang['bbs_error_unknown'] = "알 수 없는 오류";
 $lang['bbs_comment_error_login_required'] = "로그인 후 댓글 작성이 가능합니다.";
