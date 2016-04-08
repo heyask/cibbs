@@ -10,13 +10,31 @@ $lang['msg_error_not_exsist_document'] = "존재하지 않는 게시물입니다
 $lang['msg_error_not_exsist_target_document'] = "답글을 달 게시물이 존재하지 않습니다.";
 
 $lang['msg_error_not_exist_member'] = "존재하지 않는 회원입니다. 회원가입을 해주세요.";
-$lang['msg_error_not_exist_email'] = "이미 존재하는 이메일입니다.";
+$lang['msg_error_not_exist_email'] = "존재하지 않는 이메일입니다.";
+$lang['msg_error_exist_email'] = "이미 존재하는 이메일입니다.";
+$lang['msg_error_exist_member_id'] = "이미 존재하는 아이디입니다.";
+$lang['msg_error_exist_nickname'] = "이미 존재하는 닉네임입니다.";
 $lang['msg_error_email_password_diff'] = "이메일 또는 비밀번호가 다릅니다.";
+$lang['msg_error_password_password_confirm_diff'] = "이메일 또는 비밀번호가 다릅니다.";
+
+$lang['msg_error_not_exist_email'] = "존재하지 않는 이메일입니다.";
+
+$lang['msg_success_available_member_id'] = "사용가능한 아이디입니다.";
+$lang['msg_success_available_nickname'] = "사용가능한 닉네임입니다.";
+
+$lang['msg_success_reset_password'] = "비밀번호 재설정이 완료되었습니다.";
 
 $lang['msg_error_unknown'] = "알 수 없는 오류가 발생하였습니다. 다시 시도해 주세요.";
 
 
 $lang['msg_success_login'] = "로그인에 성공하였습니다.";
+$lang['msg_success_signup'] = "회원가입에 성공하였습니다.";
+
+$lang['msg_success_send_reset_password_email'] = "비밀번호 재설정 이메일이 발송되었습니다.";
+
+$lang['msg_error_member_id_strlen_min_max'] = "아이디는 최소 %d자 이상, 최대 %d자 이하입니다.";
+$lang['msg_error_nickname_strlen_min_max'] = "닉네임은 최소 %d자 이상, 최대 %d자 이하입니다.";
+$lang['msg_error_password_strlen_min_max'] = "비밀번호는 최소 %d자 이상, 최대 %d자 이하입니다.";
 
 $lang['bbs_error_unknown'] = "알 수 없는 오류";
 $lang['bbs_comment_error_login_required'] = "로그인 후 댓글 작성이 가능합니다.";

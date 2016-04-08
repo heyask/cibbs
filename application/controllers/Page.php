@@ -8,15 +8,15 @@ class Page extends CI_Controller {
 		$this->load->database();
 		
 		
-		$this->load->view('header');
+		$this->load->view('include/header');
 		$this->load->view('page/main_page');
-		$this->load->view('footer');
+		$this->load->view('include/footer');
 	}
 	
 	public function custom()
 	{
-		$this->load->view('header');
+		$this->load->view('include/header');
 		$this->load->view('page/custom');
-		$this->load->view('footer');
+		$this->load->view('include/footer');
 	}
 }

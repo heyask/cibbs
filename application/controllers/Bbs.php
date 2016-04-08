@@ -171,7 +171,7 @@ class Bbs extends CI_Controller {
 		$purifier_nohtml = new HTMLPurifier($config_nohtml);
 		
 		$config_html = HTMLPurifier_Config::createDefault();
-		$config_html->set('HTML.Allowed', "p,a[href|style|target],span,div");
+		$config_html->set('HTML.Allowed', "p[style],a[href|style|target],span[style],div[style],img[src|style],br");
 		$purifier_html = new HTMLPurifier($config_html);
 		
 		$title   = $purifier_nohtml->purify($title);
