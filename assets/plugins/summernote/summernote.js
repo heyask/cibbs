@@ -4312,7 +4312,7 @@
       return {
         range: rng,
         text: rng.toString(),
-        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false, //false에서 true로 수정함 링크추가할때 기본값으로 새창으로 열기 하기 위해
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true, //false에서 true로 수정함 링크추가할때 기본값으로 새창으로 열기 하기 위해
         url: $anchor.length ? $anchor.attr('href') : ''
       };
     };
