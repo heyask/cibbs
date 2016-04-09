@@ -4312,7 +4312,7 @@
       return {
         range: rng,
         text: rng.toString(),
-        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true, 
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true, //수정: false에서 true로 수정함 링크추가할때 기본값으로 새창으로 열기 하기 위해
         url: $anchor.length ? $anchor.attr('href') : ''
       };
     };
@@ -6012,11 +6012,12 @@
         imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
       }
 
-      var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label>' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
-                   imageLimitation +
-                 '</div>' +
+      var body = // 수정: dropzone.js 로 첨부파일, 이미지 모두 처리할 것이니 에디터에서 이미지 첨부 기능 불필요하여 삭제
+    	  		 //'<div class="form-group note-group-select-from-files">' +
+                 //  '<label>' + lang.image.selectFromFiles + '</label>' +
+                 //  '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
+                 //  imageLimitation +
+                 //'</div>' +
                  '<div class="form-group" style="overflow:auto;">' +
                    '<label>' + lang.image.url + '</label>' +
                    '<input class="note-image-url form-control col-md-12" type="text" />' +
