@@ -130,7 +130,7 @@ class Generalclass {
 		$arr = array('msg' => $msg, 'success' => $success);
 		
 		if(!empty($params))
-			array_push($arr, $params);
+			$arr = array_merge($arr, $params);
 		
 		echo json_encode($arr);
 	
@@ -161,7 +161,21 @@ class Generalclass {
 	}
 	
 	
+
+
+	public function get_attach_file_path($document_num, $key_val, $except_root = false)
+	{
+		$padded_num = str_pad($document_num, 18, '0', STR_PAD_LEFT);
+		$padded_num_arr = str_split($padded_num, 3);
+		
+		$root_path = FILES_DIR_PATH;
+		if($except_root)
+			$root_path = '';
+		
+		$path = $root_path . "/attach/" . implode('/', $padded_num_arr) ."/". $document_num."_".$key_val;
 	
+		return $path;
+	}
 	
 	
 	
@@ -230,7 +244,7 @@ class Generalclass {
     	return false;
     }
 	
-	public function convertFormatSize($bytes)
+	public function convert_format_size($bytes)
     {
     	if ($bytes >= 1073741824)
     		$bytes = number_format($bytes / 1073741824, 2) . ' GB';

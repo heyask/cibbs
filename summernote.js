@@ -4312,7 +4312,7 @@
       return {
         range: rng,
         text: rng.toString(),
-        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true, 
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
     };

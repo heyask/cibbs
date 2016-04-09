@@ -32,11 +32,27 @@ $lang['msg_success_signup'] = "회원가입에 성공하였습니다.";
 
 $lang['msg_success_send_reset_password_email'] = "비밀번호 재설정 이메일이 발송되었습니다.";
 
+$lang['msg_error_only_image_avaliable'] = "이미지파일(jpg,png,gif,bmp)만 가능합니다.";
+$lang['msg_error_not_avaliable_ext'] = "허용하지 않는 확장자입니다. 압축파일로 압축후 업로드 해주시기 바랍니다.";
+
 $lang['msg_error_member_id_strlen_min_max'] = "아이디는 최소 %d자 이상, 최대 %d자 이하입니다.";
 $lang['msg_error_nickname_strlen_min_max'] = "닉네임은 최소 %d자 이상, 최대 %d자 이하입니다.";
 $lang['msg_error_password_strlen_min_max'] = "비밀번호는 최소 %d자 이상, 최대 %d자 이하입니다.";
 
+$lang['msg_error_require_login'] = "로그인이 필요합니다.";
+
+
+
+
+
+
+
+
 $lang['bbs_error_unknown'] = "알 수 없는 오류";
+
+
+
+
 $lang['bbs_comment_error_login_required'] = "로그인 후 댓글 작성이 가능합니다.";
 $lang['bbs_comment_error_empty_content'] = "내용을 입력해 주세요.";
 $lang['bbs_comment_success_write'] = "댓글 작성이 완료되었습니다.";

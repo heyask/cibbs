@@ -1,6 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
+/*
+ * 사용자정의 상수
+ */
+defined('FILES_DIR_PATH') OR define('FILES_DIR_PATH', '/home/cibbs_files');
+defined('FILES_SERVER_URL') OR define('FILES_SERVER_URL', 'http://cibbs_files.giff.me');
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace

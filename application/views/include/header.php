@@ -25,6 +25,8 @@
 	<link href="/assets/plugins/summernote/summernote.css" rel="stylesheet">
 	<script src="/assets/plugins/summernote/summernote.js"></script>
 	<script src="/assets/plugins/summernote/lang/summernote-ko-KR.min.js"></script>
+	<link href="/assets/plugins/dropzone/dropzone.css" rel="stylesheet">
+	<script src="/assets/plugins/dropzone/dropzone.js"></script>
 	<?php } ?>
 </head>
 

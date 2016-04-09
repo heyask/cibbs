@@ -147,6 +147,7 @@ class Bbs extends CI_Controller {
 		}
 
 		
+		
 		$this->load->view('include/header', $data);
 		$this->load->view('bbs/write', $data);
 		$this->load->view('include/footer', $data);
@@ -231,7 +232,7 @@ class Bbs extends CI_Controller {
 				$this->db->where('sequence>=' , $insert_sequence);
 				$this->db->update('documents_bbs');
 			}
-				
+			
 			$this->db->set('bbs_id', 'test');
 			$this->db->set('member_num', '1');
 			$this->db->set('parent_document_num', $target_document_data->parent_document_num);
@@ -240,6 +241,9 @@ class Bbs extends CI_Controller {
 			$this->db->set('sequence', $insert_sequence);
 			$this->db->set('title', 'test');
 			$this->db->set('content', 'test');
+			$this->db->set('is_valid', 'Y');
+			$this->db->set('regdate', 'now()', false);
+			$this->db->set('ip_addr', $_SERVER['REMOTE_ADDR']);
 			$this->db->insert('documents_bbs');
 			$insert_id = $this->db->insert_id();
 			$this->db->trans_complete();
@@ -262,6 +266,9 @@ class Bbs extends CI_Controller {
 			$this->db->set('sequence', 0);
 			$this->db->set('title', $title);
 			$this->db->set('content', $content);
+			$this->db->set('is_valid', 'Y');
+			$this->db->set('regdate', 'now()', false);
+			$this->db->set('ip_addr', $_SERVER['REMOTE_ADDR']);
 			$this->db->insert('documents_bbs');
 			$insert_id = $this->db->insert_id();
 			
@@ -276,5 +283,130 @@ class Bbs extends CI_Controller {
 		$this->load->view('include/header', $data);
 		$this->load->view('bbs/listing', $data);
 		$this->load->view('include/footer', $data);
+	}
+	
+	public function servlet_image_upload($document_num)
+	{
+		
+		$isUpload = is_uploaded_file($_FILES['SummernoteFile']['tmp_name']);
+		
+		$this->load->library('Hashids');
+		$key_val = $this->hashids->encode($document_num);
+		
+		// SUCCESSFUL
+		if($isUpload) {
+			$data_dir = $this->generalclass->get_attach_file_path($document_num, $key_val);
+			$data_url = FILES_SERVER_URL . $this->generalclass->get_attach_file_path($document_num, $key_val, true);;
+		
+			@mkdir($data_dir, 0777, true);
+			@chmod($data_dir, 0777);
+		
+			$tmp_name = $_FILES['SummernoteFile']['tmp_name'];
+			$name = $_FILES['SummernoteFile']['name'];
+		
+			$filename_ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+			$mime_result  = $finfo->file($tmp_name);
+			
+			if(stripos($mime_result, 'jpg'))
+				$filename_ext = 'jpg';
+			else if(stripos($mime_result, 'jpeg'))
+				$filename_ext = 'jpg';
+			else if(stripos($mime_result, 'png'))
+				$filename_ext = 'png';
+			else if(stripos($mime_result, 'gif'))
+				$filename_ext = 'gif';
+			else if(stripos($mime_result, 'bmp'))
+				$filename_ext = 'bmp';
+			else
+				$this->generalclass->print_json(lang('msg_error_only_image_avaliable'), false);
+			
+			if(!getimagesize($tmp_name)) 
+				$this->generalclass->print_json(lang('msg_error_only_image_avaliable'), false);
+			
+			
+			$file_name = str_replace(' ', '_', substr(microtime(), 2)) . "." . $filename_ext;
+			$save_dir = $data_dir . "/" . $file_name;
+			$save_url = $data_url . "/" . $file_name;
+			
+			@move_uploaded_file($tmp_name, $save_dir);
+			
+			$this->generalclass->print_json('', true, array('save_url' => $save_url));
+		} else {
+			$error = $_FILES['SummernoteFile']['error'];
+			
+			$this->generalclass->print_json($error, false);
+		}
+	}
+	
+	public function servlet_attach_file($bbs_id)
+	{
+		$isUpload = is_uploaded_file($_FILES['attach_file']['tmp_name']);
+		
+		$this->load->library('Hashids');
+		$member_num = $this->session->userdata('member_num');
+		
+		if(!$this->generalclass->is_logged())
+			$this->generalclass->print_json(lang('msg_error_require_login'), false);
+		
+		// SUCCESSFUL
+		if($isUpload) {
+			$tmp_name = $_FILES['attach_file']['tmp_name'];
+			$name = $_FILES['attach_file']['name'];
+		
+			$filename_ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+			$mime_result  = $finfo->file($tmp_name);
+			$filesize = filesize($tmp_name);
+			$filename = preg_replace("/[^a-zA-Z0-9가-힣\.]+/", "_", $name);
+			$filename = preg_replace('!\_+!', '_', $filename);
+			
+			if(stripos($mime_result, 'jpeg'))
+				$filename_ext = 'jpg';
+			
+			if(!in_array($filename_ext, array(
+					'zip','rar','tar','gz','tgz','7z',
+					'hwp','docx','doc','xls','rtf','txt','pdf',
+					'jpg','gif','bmp','png','webp','svg','ttf','otf',
+					'mp3','mp4','avi','wmv'))
+					&&
+					!preg_match('/^([a-z]|[0-9])[0-9]{1,3}$/', $filename_ext))//분할압축 파일 허용
+				$this->generalclass->print_json(lang('msg_error_not_avaliable_ext'), false);
+			
+			$this->load->database();
+			$this->db->set('bbs_id', $bbs_id);
+			$this->db->set('member_num', $member_num);
+			$this->db->set('filename', $filename);
+			$this->db->set('filesize', $filesize);
+			$this->db->set('filetype', $mime_result);
+			$this->db->set('extension', $filename_ext);
+			$this->db->set('regdate', 'now()', false);
+			$this->db->set('ip_addr', $_SERVER['REMOTE_ADDR']);
+			$this->db->insert('files');
+			$insert_id = $this->db->insert_id();
+			$key_val = $this->hashids->encode($insert_id);
+
+			$data_dir = $this->generalclass->get_attach_file_path($insert_id, $key_val);
+			$data_url = FILES_SERVER_URL . $this->generalclass->get_attach_file_path($insert_id, $key_val, true);;
+			
+			@mkdir($data_dir, 0777, true);
+			@chmod($data_dir, 0777);
+			
+			$file_name = str_replace(' ', '_', substr(microtime(), 2)) . "." . $filename_ext;
+			$save_dir = $data_dir . "/" . $file_name;
+			$save_url = $data_url . "/" . $file_name;
+			
+			@move_uploaded_file($tmp_name, $save_dir);
+
+			$this->db->set('fileurl', $save_url);
+			$this->db->where('file_num', $insert_id);
+			$this->db->update('files');
+			
+			$this->generalclass->print_json('', true, array('save_url' => $save_url, 'filename' => $file_name));
+		} else {
+			$error = $_FILES['SummernoteFile']['error'];
+				
+			$this->generalclass->print_json($error, false);
+		}
 	}
 }

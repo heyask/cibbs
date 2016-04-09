@@ -69,7 +69,7 @@ class Bbsmodel extends CI_Model {
 			FROM documents_bbs
 			LEFT JOIN member
 			ON documents_bbs.member_num=member.member_num
-			WHERE documents_bbs.bbs_id='".$bbs_id."' " . $search_where . "
+			WHERE documents_bbs.bbs_id='".$bbs_id."' " . $search_where . " AND documents_bbs.is_valid='Y'
 			ORDER BY documents_bbs.parent_document_num DESC, documents_bbs.sequence ASC LIMIT " . $start_limit . "," . $listing_cnt)->result();
 		
 		return $documents_result;
